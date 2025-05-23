@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         surface: "#EEEEEE",
+        neutral: "#404040",
         text: {
           gray: "#585660",
         },
