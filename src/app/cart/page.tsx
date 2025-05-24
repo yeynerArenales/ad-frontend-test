@@ -1,3 +1,9 @@
+import { Button } from "@/components/atoms/button";
+
 export default function CartPage() {
-  return <h1>CartPage</h1>;
+  return (
+    <div className="py-8">
+      <Button variant="secondary">Click me</Button>
+    </div>
+  );
 }

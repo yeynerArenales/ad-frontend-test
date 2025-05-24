@@ -7,10 +7,16 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontSize: {
+      base: "16px",
+      lg: "18px",
+      xl: "20px",
+    },
     extend: {
       colors: {
         surface: "#EEEEEE",
         neutral: "#404040",
+        neutralDark: "#3B3B3B",
         text: {
           gray: "#585660",
         },

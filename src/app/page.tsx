@@ -1,3 +1,9 @@
+import { Button } from "@/components/atoms/button";
+
 export default async function Home() {
-  return <h1>Hello, world!</h1>;
+  return (
+    <div className="py-8">
+      <Button>Click me</Button>
+    </div>
+  );
 }
