@@ -10,6 +10,7 @@ export const Footer = () => {
           alt="Apply Digital Logo"
           width={170}
           height={44}
+          priority
         />
       </Link>
     </footer>
