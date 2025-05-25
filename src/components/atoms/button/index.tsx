@@ -1,9 +1,13 @@
+import { Loader } from "../loader";
+
 interface ButtonProps {
   children: React.ReactNode;
   variant?: "primary" | "secondary";
   className?: string;
   onClick?: () => void;
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
+  isLoading?: boolean;
 }
 
 export const Button = ({
@@ -12,6 +16,8 @@ export const Button = ({
   className,
   onClick,
   disabled,
+  type = "button",
+  isLoading,
   ...props
 }: ButtonProps) => {
   return (
@@ -25,9 +31,10 @@ export const Button = ({
       }`}
       onClick={onClick}
       disabled={disabled}
+      type={type}
       {...props}
     >
-      {children}
+      {isLoading ? <Loader size="small" className="mr-2" /> : children}
     </button>
   );
 };
