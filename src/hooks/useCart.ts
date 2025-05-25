@@ -16,25 +16,31 @@ export const useCart = () => {
     }
   }, []);
 
-  const handleAddToCart = useCallback(async (game: Game) => {
-    setLoading(true);
-    try {
-      await addToCart(game);
-      await fetchCart();
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchCart]);
+  const handleAddToCart = useCallback(
+    async (game: Game) => {
+      setLoading(true);
+      try {
+        await addToCart(game);
+        await fetchCart();
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchCart]
+  );
 
-  const handleRemoveFromCart = useCallback(async (game: Game) => {
-    setLoading(true);
-    try {
-      await removeFromCart(game);
-      await fetchCart();
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchCart]);
+  const handleRemoveFromCart = useCallback(
+    async (game: Game) => {
+      setLoading(true);
+      try {
+        await removeFromCart(game);
+        await fetchCart();
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchCart]
+  );
 
   useEffect(() => {
     fetchCart();

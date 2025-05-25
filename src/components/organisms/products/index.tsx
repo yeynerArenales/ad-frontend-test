@@ -10,7 +10,7 @@ import { Dropdown } from "@/components/molecules/dropdown";
 import { Toast } from "@/components/molecules/toast";
 import { Game } from "@/types/game";
 
-export const Products = ( { initialGenre }: { initialGenre: string } ) => {
+export const Products = ({ initialGenre }: { initialGenre: string }) => {
   const [toast, setToast] = useState<{ show: boolean; message: string }>({
     show: false,
     message: "",
