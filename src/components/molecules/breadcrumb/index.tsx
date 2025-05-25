@@ -18,7 +18,7 @@ export const Breadcrumb = () => {
     >
       <Link
         href="/"
-        className="flex items-center gap-2 text-base text-medium text-secondary hover:text-primary"
+        className="flex items-center gap-2 text-base text-medium text-secondary hover:text-tertiary"
       >
         <Image
           src="/icons/arrowLeft.svg"
