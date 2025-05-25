@@ -1,4 +1,4 @@
-import { ProductItem } from "@/components/molecules/productItem";
+import { Products } from "@/components/organisms/products";
 
 export default async function Home() {
   return (
@@ -6,7 +6,7 @@ export default async function Home() {
       <h1 className="font-bold text-xxl text-primary uppercase md:normal-case md:text-xxxl">
         Top Sellers
       </h1>
-      <ProductItem />
+      <Products />
     </div>
   );
 }
