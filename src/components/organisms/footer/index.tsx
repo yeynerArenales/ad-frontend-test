@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export const Footer = () => {
   return (
-    <footer className="bg-neutral h-[170px] flex items-center justify-center">
+    <footer className="bg-primary h-[170px] flex items-center justify-center">
       <Link href="/">
         <Image
           src="/applyDigitalLogo.svg"
