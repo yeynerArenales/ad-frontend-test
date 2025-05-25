@@ -2,12 +2,16 @@ interface ButtonProps {
   children: React.ReactNode;
   variant?: "primary" | "secondary";
   className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
 }
 
 export const Button = ({
   children,
   variant = "primary",
   className,
+  onClick,
+  disabled,
   ...props
 }: ButtonProps) => {
   return (
@@ -16,7 +20,11 @@ export const Button = ({
         variant === "primary"
           ? "bg-transparent text-secondary border border-secondary"
           : "bg-text-dark text-white"
-      } cursor-pointer rounded-lg h-[56px] w-full font-bold text-base hover:opacity-80 transition-opacity ${className}`}
+      } cursor-pointer rounded-lg h-[56px] w-full font-bold text-base hover:opacity-80 transition-opacity ${className} ${
+        disabled ? "opacity-50 cursor-not-allowed" : ""
+      }`}
+      onClick={onClick}
+      disabled={disabled}
       {...props}
     >
       {children}

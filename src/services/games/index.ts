@@ -1,7 +1,7 @@
-import { httpClient } from "@/config/api";
-import { GetGamesResponse } from "@/../types";
+import { API_CONFIG } from "@/config/api";
 
 export const getGames = async (currentPage: number = 1) => {
-  const response = await httpClient.get<GetGamesResponse>(`/games?page=${currentPage}`);
-  return response;
+  console.log(`${API_CONFIG.baseURL}/games?page=${currentPage}`);
+    const response = await fetch(`${API_CONFIG.baseURL}/games?page=${currentPage}`);
+    return response.json();
 };
