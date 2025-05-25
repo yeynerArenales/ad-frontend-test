@@ -22,6 +22,7 @@ const config: Config = {
         secondary: "#3B3B3B",
         tertiary: "#8F8F8F",
         quaternary: "#F5F5F4",
+        lavenderMist: "#EFEDF3",
         text: {
           dark: "#585660",
           light: "#737373",
