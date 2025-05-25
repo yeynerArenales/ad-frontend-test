@@ -8,7 +8,9 @@ export const useGames = (initialGenre?: string) => {
   const [page, setPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [availableFilters, setAvailableFilters] = useState<string[]>([]);
-  const [genre, setGenre] = useState<string | undefined>(initialGenre);
+  const [genre, setGenre] = useState<string | undefined>(
+    initialGenre?.toLowerCase()
+  );
 
   const fetchGames = useCallback(async (page?: number, genre?: string) => {
     setIsLoading(true);
