@@ -50,7 +50,7 @@ export const Products = ( { initialGenre }: { initialGenre: string } ) => {
   return (
     <>
       <div className="grid grid-cols-[auto,1fr] items-center gap-2 text-secondary border-b border-lavenderMist pb-4 md:flex md:justify-end">
-        <h4 className="text-xl font-bold">Gender |</h4>
+        <h4 className="text-xl font-bold">Genre |</h4>
         <Dropdown
           options={availableFilters}
           selected={genre || "All"}
