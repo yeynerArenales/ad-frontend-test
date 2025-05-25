@@ -15,7 +15,7 @@ export const Button = ({
       className={`${
         variant === "primary"
           ? "bg-transparent text-secondary border border-secondary"
-          : "bg-text-light text-white"
+          : "bg-text-dark text-white"
       } cursor-pointer rounded-lg h-[56px] w-full font-bold text-base hover:opacity-80 transition-opacity ${className}`}
       {...props}
     >
