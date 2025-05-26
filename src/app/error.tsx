@@ -26,7 +26,7 @@ export default function Error({
         We apologize for the inconvenience. Please try again or contact support
         if the problem persists.
       </p>
-      <div className="flex gap-4">
+      <div className="flex gap-4 w-[80%]">
         <Button variant="primary" onClick={() => reset()}>
           Try again
         </Button>
