@@ -32,7 +32,11 @@ export const Dropdown = ({
       <button
         type="button"
         className="w-full flex items-center justify-between px-4 py-2 text-xl text-secondary"
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() => {
+          if (options.length > 0) {
+            setOpen((prev) => !prev);
+          }
+        }}
       >
         <span className="capitalize">{selected}</span>
         <Image

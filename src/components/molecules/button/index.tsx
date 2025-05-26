@@ -1,4 +1,4 @@
-import { Loader } from "../loader";
+import { Loader } from "@/components/atoms/loader";
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -37,4 +37,4 @@ export const Button = ({
       {isLoading ? <Loader size="small" className="mr-2" /> : children}
     </button>
   );
-};
+}; 

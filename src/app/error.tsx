@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "@/components/atoms/button";
+import { Button } from "@/components/molecules/button";
 import { useRouter } from "next/navigation";
 
 export default function Error({

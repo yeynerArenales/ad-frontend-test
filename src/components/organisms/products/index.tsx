@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useGames } from "@/hooks/useGames";
 import { useCart } from "@/hooks/useCart";
-import { Button } from "@/components/atoms/button";
+import { Button } from "@/components/molecules/button";
 import { ProductItem } from "@/components/molecules/productItem";
 import { Loader } from "@/components/atoms/loader";
 import { Dropdown } from "@/components/molecules/dropdown";
