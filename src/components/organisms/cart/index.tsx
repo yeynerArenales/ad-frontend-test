@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import { Spinner } from "@/components/atoms/spinner";
 import { CartItem } from "@/components/molecules/cartItem";
 import { CartSummary } from "@/components/molecules/cartSummary";
 import { Toast } from "@/components/molecules/toast";
+import { Button } from "@/components/molecules/button";
 import { Game, ToastState } from "@/types";
 
 export const Cart = () => {
+  const router = useRouter();
   const { products, loading, handleCartAction } = useCart();
   const [toast, setToast] = useState<ToastState>({
     show: false,
@@ -53,6 +56,14 @@ export const Cart = () => {
         </section>
         <section className="col-span-1">
           <CartSummary products={products} />
+          <Button
+            variant="secondary"
+            className="mt-8"
+            onClick={() => router.push("/")}
+            disabled={products.length === 0}
+          >
+            Checkout
+          </Button>
         </section>
       </div>
       <Toast
