@@ -6,6 +6,7 @@ const CART_COOKIE = "cart";
 
 export async function GET(req: NextRequest) {
   const cart = req.cookies.get(CART_COOKIE)?.value;
+  await delay(2000);
   return NextResponse.json(cart ? JSON.parse(cart) : []);
 }
 

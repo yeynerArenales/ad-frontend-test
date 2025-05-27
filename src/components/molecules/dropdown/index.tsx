@@ -32,7 +32,11 @@ export const Dropdown = ({
       <button
         type="button"
         className="w-full flex items-center justify-between px-4 py-2 text-xl text-secondary"
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() => {
+          if (options.length > 0) {
+            setOpen((prev) => !prev);
+          }
+        }}
       >
         <span className="capitalize">{selected}</span>
         <Image
@@ -49,7 +53,9 @@ export const Dropdown = ({
             <li
               key={option}
               className={`px-4 py-2 cursor-pointer hover:bg-gray-100 text-gray-800 ${
-                option.toLowerCase() === selected.toLowerCase() ? "font-semibold" : ""
+                option.toLowerCase() === selected.toLowerCase()
+                  ? "font-semibold"
+                  : ""
               }`}
               onClick={() => {
                 onSelect(option);
