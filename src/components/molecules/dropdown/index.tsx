@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { cn } from "@/utils/cn";
 
 interface DropdownProps {
   options: string[];
   selected: string;
   onSelect: (option: string) => void;
   className?: string;
+  disabled?: boolean;
 }
 
 export const Dropdown = ({
@@ -13,6 +15,7 @@ export const Dropdown = ({
   selected,
   onSelect,
   className = "",
+  disabled = false,
 }: DropdownProps) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -31,7 +34,11 @@ export const Dropdown = ({
     <div ref={ref} className={`relative w-48 ${className}`}>
       <button
         type="button"
-        className="w-full flex items-center justify-between px-4 py-2 text-xl text-secondary"
+        className={cn(
+          "w-full flex items-center justify-between px-4 py-2 text-xl text-secondary",
+          disabled && "opacity-50 cursor-not-allowed" || ""
+        )}
+        disabled={disabled}
         onClick={() => {
           if (options.length > 0) {
             setOpen((prev) => !prev);
