@@ -5,9 +5,9 @@ import { useGames } from "@/hooks/useGames";
 import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/molecules/button";
 import { ProductItem } from "@/components/molecules/productItem";
-import { Spinner } from "@/components/atoms/spinner";
 import { Dropdown } from "@/components/molecules/dropdown";
-import { Toast } from "@/components/molecules/toast";
+import { Spinner } from "@/components/atoms/spinner";
+import { Toast } from "@/components/atoms/toast";
 import { Game, ToastState } from "@/types";
 
 export const Products = ({ initialGenre }: { initialGenre: string }) => {

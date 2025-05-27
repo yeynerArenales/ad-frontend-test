@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
-import { Spinner } from "@/components/atoms/spinner";
 import { CartItem } from "@/components/molecules/cartItem";
 import { CartSummary } from "@/components/molecules/cartSummary";
-import { Toast } from "@/components/molecules/toast";
 import { Button } from "@/components/molecules/button";
+import { Spinner } from "@/components/atoms/spinner";
+import { Toast } from "@/components/atoms/toast";
 import { Game, ToastState } from "@/types";
 
 export const Cart = () => {

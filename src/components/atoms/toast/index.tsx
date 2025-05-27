@@ -1,11 +1,5 @@
 import { useEffect } from "react";
-
-interface ToastProps {
-  message: string;
-  show: boolean;
-  onClose: () => void;
-  duration?: number; // in ms
-}
+import { ToastProps } from "./types";
 
 export const Toast = ({
   message,
