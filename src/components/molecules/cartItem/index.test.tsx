@@ -89,8 +89,8 @@ describe('CartItem', () => {
     render(<CartItem game={game} handleRemove={mockHandleRemove} />);
 
     const removeButtons = screen.getAllByRole('button');
-    expect(removeButtons[0]).toHaveClass('md:hidden'); // Mobile button
-    expect(removeButtons[1]).toHaveClass('hidden', 'md:block'); // Desktop button
+    expect(removeButtons[0]).toHaveClass('md:hidden');
+    expect(removeButtons[1]).toHaveClass('hidden', 'md:block');
   });
 
   it('applies custom className when provided', () => {
