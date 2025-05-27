@@ -51,7 +51,7 @@ jest.mock("@/components/atoms/spinner", () => ({
 }));
 
 if (!expect.getState().testPath?.includes("toast/index.test.tsx")) {
-  jest.mock("@/components/molecules/toast", () => ({
+  jest.mock("@/components/atoms/toast", () => ({
     Toast: ({ message, show }: { message: string; show: boolean }) => {
       if (!show) return null;
       return (
