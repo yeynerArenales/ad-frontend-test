@@ -38,4 +38,13 @@ jest.mock('@/components/atoms/spinner', () => ({
       />
     );
   },
-})); 
+}));
+
+// Mock timers for Toast component
+beforeEach(() => {
+  jest.useFakeTimers();
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+}); 
