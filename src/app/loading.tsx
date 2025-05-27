@@ -1,9 +1,9 @@
-import { Loader } from "@/components/atoms/loader";
+import { Spinner } from "@/components/atoms/spinner";
 
 export default function Loading() {
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <Loader size="large" />
+    <div className="flex h-screen w-full items-center justify-center">
+      <Spinner size="large" />
     </div>
   );
 }

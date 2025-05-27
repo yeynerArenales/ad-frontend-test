@@ -5,7 +5,7 @@ import { useGames } from "@/hooks/useGames";
 import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/molecules/button";
 import { ProductItem } from "@/components/molecules/productItem";
-import { Loader } from "@/components/atoms/loader";
+import { Spinner } from "@/components/atoms/spinner";
 import { Dropdown } from "@/components/molecules/dropdown";
 import { Toast } from "@/components/molecules/toast";
 import { Game } from "@/types/game";
@@ -28,12 +28,12 @@ export const Products = ({ initialGenre }: { initialGenre: string }) => {
     genre,
   } = useGames(initialGenre);
 
-  const { cart, addToCart, removeFromCart } = useCart();
+  const { products: productsCart, addToCart, removeFromCart } = useCart();
 
   const handleCartAction = async (game: Game) => {
     setLoadingId(game.id);
     try {
-      if (cart.some((item) => item.id === game.id)) {
+      if (productsCart.some((item) => item.id === game.id)) {
         await removeFromCart(game);
         setToast({ show: true, message: "Game removed from cart" });
       } else {
@@ -64,12 +64,12 @@ export const Products = ({ initialGenre }: { initialGenre: string }) => {
             key={game.id}
             game={game}
             handleOnClick={() => handleCartAction(game)}
-            isInCart={cart.some((item) => item.id === game.id)}
+            isInCart={productsCart.some((item) => item.id === game.id)}
             isLoading={loadingId === game.id}
           />
         ))}
       </div>
-      {isLoading && <Loader size="large" className="my-8" />}
+      {isLoading && <Spinner size="large" className="my-8" />}
       {!isLoading && page < totalPages && !genre && (
         <Button
           className="mt-4 md:w-[137px]"

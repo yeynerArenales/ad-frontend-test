@@ -1,6 +1,7 @@
-import { Loader } from "@/components/atoms/loader";
+import { Spinner } from "@/components/atoms/spinner";
+import { cn } from "@/utils/cn";
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: "primary" | "secondary";
   className?: string;
@@ -12,7 +13,7 @@ interface ButtonProps {
 
 export const Button = ({
   children,
-  variant = "primary",
+  variant = "secondary",
   className,
   onClick,
   disabled,
@@ -22,19 +23,20 @@ export const Button = ({
 }: ButtonProps) => {
   return (
     <button
-      className={`${
+      className={cn(
+        "cursor-pointer rounded-lg h-[56px] w-full font-bold text-base hover:opacity-80 transition-opacity",
         variant === "primary"
           ? "bg-transparent text-secondary border border-secondary"
-          : "bg-text-dark text-white"
-      } cursor-pointer rounded-lg h-[56px] w-full font-bold text-base hover:opacity-80 transition-opacity ${className} ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      }`}
+          : "bg-text-dark text-white",
+        disabled ? "opacity-50 cursor-not-allowed" : "",
+        className
+      )}
       onClick={onClick}
       disabled={disabled}
       type={type}
       {...props}
     >
-      {isLoading ? <Loader size="small" className="mr-2" /> : children}
+      {isLoading ? <Spinner size="small" className="mr-2" /> : children}
     </button>
   );
 }; 

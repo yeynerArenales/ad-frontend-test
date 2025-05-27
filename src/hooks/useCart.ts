@@ -3,14 +3,14 @@ import { Game } from "@/types/game";
 import { getCart, addToCart, removeFromCart } from "@/services/cart";
 
 export const useCart = () => {
-  const [cart, setCart] = useState<Game[]>([]);
+  const [products, setProducts] = useState<Game[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchCart = useCallback(async () => {
     setLoading(true);
     try {
       const items = await getCart();
-      setCart(items);
+      setProducts(items);
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ export const useCart = () => {
   }, []);
 
   return {
-    cart,
+    products,
     loading,
     fetchCart,
     addToCart: handleAddToCart,
