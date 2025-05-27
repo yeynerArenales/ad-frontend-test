@@ -74,10 +74,8 @@ export const useGames = (initialGenre?: string) => {
   }, []);
 
   useEffect(() => {
-    if (state.page) {
-      fetchGames(state.page, state.genre);
-    }
-  }, [state.page, state.genre]);
+    fetchGames(state.page, state.genre);
+  }, [state.page, state.genre, fetchGames]);
 
   const handleSeeMore = useCallback(() => {
     updateState((prev) => ({ page: prev.page + 1 }));
