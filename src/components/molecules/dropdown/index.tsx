@@ -1,14 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/utils/cn";
-
-interface DropdownProps {
-  options: string[];
-  selected: string;
-  onSelect: (option: string) => void;
-  className?: string;
-  disabled?: boolean;
-}
+import { DropdownProps } from "./types";
 
 export const Dropdown = ({
   options,

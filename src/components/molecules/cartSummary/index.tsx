@@ -1,10 +1,6 @@
 import { Game } from "@/types/game";
 
-interface CartSummaryProps {
-  products: Game[];
-}
-
-export const CartSummary = ({ products }: CartSummaryProps) => {
+export const CartSummary = ({ products }: { products: Game[] }) => {
   const total = products
     .reduce((acc, product) => acc + product.price, 0)
     .toFixed(2);
