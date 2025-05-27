@@ -8,14 +8,13 @@ import { ProductItem } from "@/components/molecules/productItem";
 import { Spinner } from "@/components/atoms/spinner";
 import { Dropdown } from "@/components/molecules/dropdown";
 import { Toast } from "@/components/molecules/toast";
-import { Game } from "@/types/game";
+import { Game, ToastState } from "@/types";
 
 export const Products = ({ initialGenre }: { initialGenre: string }) => {
-  const [toast, setToast] = useState<{ show: boolean; message: string }>({
+  const [toast, setToast] = useState<ToastState>({
     show: false,
     message: "",
   });
-  const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const {
     games,
@@ -28,24 +27,26 @@ export const Products = ({ initialGenre }: { initialGenre: string }) => {
     genre,
   } = useGames(initialGenre);
 
-  const { products: productsCart, addToCart, removeFromCart } = useCart();
+  const {
+    products: productsCart,
+    loadingIds,
+    waitingIds,
+    handleCartAction,
+  } = useCart();
 
-  const handleCartAction = async (game: Game) => {
-    setLoadingId(game.id);
+  const handleCartClick = async (game: Game) => {
     try {
-      if (productsCart.some((item) => item.id === game.id)) {
-        await removeFromCart(game);
-        setToast({ show: true, message: "Game removed from cart" });
-      } else {
-        await addToCart(game);
-        setToast({ show: true, message: "Game added to cart" });
-      }
+      const wasInCart = await handleCartAction(game);
+      setToast({
+        show: true,
+        message: wasInCart ? "Game removed from cart" : "Game added to cart",
+      });
     } catch (error) {
       setToast({ show: true, message: "An error occurred. Please try again." });
-    } finally {
-      setLoadingId(null);
     }
   };
+
+  const handleToastClose = () => setToast((prev) => ({ ...prev, show: false }));
 
   return (
     <>
@@ -63,9 +64,9 @@ export const Products = ({ initialGenre }: { initialGenre: string }) => {
           <ProductItem
             key={game.id}
             game={game}
-            handleOnClick={() => handleCartAction(game)}
+            handleOnClick={() => handleCartClick(game)}
             isInCart={productsCart.some((item) => item.id === game.id)}
-            isLoading={loadingId === game.id}
+            isLoading={loadingIds.has(game.id) || waitingIds.has(game.id)}
           />
         ))}
       </div>
@@ -82,7 +83,7 @@ export const Products = ({ initialGenre }: { initialGenre: string }) => {
       <Toast
         message={toast.message}
         show={toast.show}
-        onClose={() => setToast((prev) => ({ ...prev, show: false }))}
+        onClose={handleToastClose}
       />
     </>
   );

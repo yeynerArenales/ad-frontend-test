@@ -1,16 +1,31 @@
 "use client";
 
+import { useState } from "react";
+import { useCart } from "@/hooks/useCart";
 import { Spinner } from "@/components/atoms/spinner";
 import { CartItem } from "@/components/molecules/cartItem";
 import { CartSummary } from "@/components/molecules/cartSummary";
-import { useCart } from "@/hooks/useCart";
-import { Game } from "@/types/game";
+import { Toast } from "@/components/molecules/toast";
+import { Game, ToastState } from "@/types";
 
 export const Cart = () => {
-  const { products, loading, removeFromCart } = useCart();
+  const { products, loading, handleCartAction } = useCart();
+  const [toast, setToast] = useState<ToastState>({
+    show: false,
+    message: "",
+  });
 
-  const handleRemove = (game: Game) => {
-    removeFromCart(game);
+  const handleRemove = async (game: Game) => {
+    try {
+      await handleCartAction(game);
+      setToast({
+        show: true,
+        message: "Game removed from cart",
+      });
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+      setToast({ show: true, message: "An error occurred. Please try again." });
+    }
   };
 
   return (
@@ -40,6 +55,11 @@ export const Cart = () => {
           <CartSummary products={products} />
         </section>
       </div>
+      <Toast
+        message={toast.message}
+        show={toast.show}
+        onClose={() => setToast((prev) => ({ ...prev, show: false }))}
+      />
     </>
   );
 };
