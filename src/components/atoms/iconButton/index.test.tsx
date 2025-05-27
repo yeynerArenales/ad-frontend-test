@@ -1,13 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { IconButton } from './index';
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => {
-    return <img {...props} />
-  },
-}));
-
 describe('IconButton', () => {
   const mockIcon = '/test-icon.png';
   const mockOnClick = jest.fn();
