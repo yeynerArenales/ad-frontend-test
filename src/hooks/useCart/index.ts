@@ -1,17 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Game } from "@/types/game";
 import { getCart, addToCart, removeFromCart } from "@/services/cart";
-
-type CartAction = () => Promise<boolean>;
-
-interface CartState {
-  products: Game[];
-  loading: boolean;
-  loadingIds: Set<string>;
-  waitingIds: Set<string>;
-  actionQueue: CartAction[];
-  isProcessing: boolean;
-}
+import { CartState, CartAction } from "./types";
 
 export const useCart = () => {
   const [state, setState] = useState<CartState>({
@@ -22,6 +12,15 @@ export const useCart = () => {
     actionQueue: [],
     isProcessing: false,
   });
+
+  const {
+    products,
+    loading,
+    loadingIds,
+    waitingIds,
+    actionQueue,
+    isProcessing,
+  } = state;
 
   const updateState = useCallback(
     (
@@ -47,10 +46,10 @@ export const useCart = () => {
   }, [updateState]);
 
   const processNextAction = useCallback(async () => {
-    if (state.isProcessing || state.actionQueue.length === 0) return;
+    if (isProcessing || actionQueue.length === 0) return;
 
     updateState({ isProcessing: true });
-    const nextAction = state.actionQueue[0];
+    const nextAction = actionQueue[0];
 
     try {
       await nextAction();
@@ -60,19 +59,13 @@ export const useCart = () => {
         isProcessing: false,
       }));
     }
-  }, [state.isProcessing, state.actionQueue, updateState]);
-
-  useEffect(() => {
-    if (!state.isProcessing && state.actionQueue.length > 0) {
-      processNextAction();
-    }
-  }, [state.isProcessing, state.actionQueue, processNextAction]);
+  }, [isProcessing, actionQueue, updateState]);
 
   const handleCartAction = useCallback(
     async (game: Game): Promise<boolean> => {
       updateState({ loading: true });
 
-      if (state.isProcessing) {
+      if (isProcessing) {
         updateState((prev) => ({
           waitingIds: new Set([...Array.from(prev.waitingIds), game.id]),
         }));
@@ -85,7 +78,7 @@ export const useCart = () => {
       return new Promise((resolve) => {
         const cartAction: CartAction = async () => {
           try {
-            const isInCart = state.products.some((item) => item.id === game.id);
+            const isInCart = products.some((item) => item.id === game.id);
 
             if (isInCart) {
               await removeFromCart(game);
@@ -115,18 +108,24 @@ export const useCart = () => {
         }));
       });
     },
-    [state.products, state.isProcessing, fetchCart, updateState]
+    [products, isProcessing, fetchCart, updateState]
   );
+
+  useEffect(() => {
+    if (!isProcessing && actionQueue.length > 0) {
+      processNextAction();
+    }
+  }, [isProcessing, actionQueue, processNextAction]);
 
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
 
   return {
-    products: state.products,
-    loading: state.loading,
-    loadingIds: state.loadingIds,
-    waitingIds: state.waitingIds,
+    products,
+    loading,
+    loadingIds,
+    waitingIds,
     handleCartAction,
   };
 };

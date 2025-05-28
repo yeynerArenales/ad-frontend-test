@@ -1,14 +1,7 @@
-import { IconButton } from "@/components/atoms/iconButton";
-import { Game } from "@/types/game";
 import Image from "next/image";
+import { IconButton } from "@/components/atoms/iconButton";
 import { cn } from "@/utils/cn";
-
-interface CartItemProps {
-  game: Game;
-  handleRemove: (game: Game) => void;
-  className?: string;
-  isLoading?: boolean;
-}
+import { CartItemProps } from "./types";
 
 export const CartItem = ({ game, handleRemove, className }: CartItemProps) => {
   return (
@@ -34,8 +27,12 @@ export const CartItem = ({ game, handleRemove, className }: CartItemProps) => {
         <span className="text-base font-bold uppercase text-text-light">
           {game.genre}
         </span>
-        <h2 className="text-xl font-bold text-secondary truncate">{game.name}</h2>
-        <p className="text-base text-text-light md:line-clamp-2">{game.description}</p>
+        <h2 className="text-xl font-bold text-secondary truncate">
+          {game.name}
+        </h2>
+        <p className="text-base text-text-light md:line-clamp-2">
+          {game.description}
+        </p>
         <p className="text-end text-xl font-bold text-secondary">
           ${game.price}
         </p>

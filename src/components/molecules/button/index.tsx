@@ -1,15 +1,6 @@
 import { Spinner } from "@/components/atoms/spinner";
 import { cn } from "@/utils/cn";
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-  variant?: "primary" | "secondary";
-  className?: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  type?: "button" | "submit" | "reset";
-  isLoading?: boolean;
-}
+import { ButtonProps } from "./types";
 
 export const Button = ({
   children,
@@ -39,4 +30,4 @@ export const Button = ({
       {isLoading ? <Spinner size="small" className="mr-2" /> : children}
     </button>
   );
-}; 
+};

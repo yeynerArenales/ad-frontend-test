@@ -37,19 +37,17 @@ export const ProductItem = ({
         />
       </div>
       <div className="flex flex-col flex-grow justify-between">
-        <div>
-          <p className="text-text-light text-base font-bold uppercase mt-3">
-            {game.genre}
-          </p>
-          <div className="flex justify-between items-center mt-3">
-            <h3
-              className="text-secondary text-lg font-bold truncate max-w-[240px]"
-              title={game.name}
-            >
-              {game.name}
-            </h3>
-            <p className="text-secondary text-xl font-bold">${game.price}</p>
-          </div>
+        <p className="text-text-light text-base font-bold uppercase mt-3">
+          {game.genre}
+        </p>
+        <div className="flex justify-between items-center mt-3">
+          <h3
+            className="text-secondary text-lg font-bold truncate max-w-[240px]"
+            title={game.name}
+          >
+            {game.name}
+          </h3>
+          <p className="text-secondary text-xl font-bold">${game.price}</p>
         </div>
         <Button
           variant={isInCart ? "secondary" : "primary"}

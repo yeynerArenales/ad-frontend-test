@@ -1,22 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { Game } from "@/types/game";
 import { getGames } from "@/services/games";
-
-interface GamesState {
-  games: Game[];
-  totalPages: number;
-  page: number;
-  isLoading: boolean;
-  availableFilters: string[];
-  genre: string | undefined;
-}
-
-interface GamesResponse {
-  games: Game[];
-  totalPages: number;
-  availableFilters: string[];
-  currentPage: number;
-}
+import { GamesState, GamesResponse } from "./types";
 
 const initialState: GamesState = {
   games: [],
@@ -32,6 +16,8 @@ export const useGames = (initialGenre?: string) => {
     ...initialState,
     genre: initialGenre?.toLowerCase(),
   }));
+
+  const { page, genre, games, totalPages, availableFilters, isLoading } = state;
 
   const updateState = useCallback(
     (
@@ -73,12 +59,6 @@ export const useGames = (initialGenre?: string) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (state.page) {
-      fetchGames(state.page, state.genre);
-    }
-  }, [state.page, state.genre]);
-
   const handleSeeMore = useCallback(() => {
     updateState((prev) => ({ page: prev.page + 1 }));
   }, [updateState]);
@@ -94,14 +74,18 @@ export const useGames = (initialGenre?: string) => {
     [updateState]
   );
 
+  useEffect(() => {
+    fetchGames(page, genre);
+  }, [page, genre, fetchGames]);
+
   return {
-    games: state.games,
-    totalPages: state.totalPages,
-    page: state.page,
-    isLoading: state.isLoading,
-    availableFilters: state.availableFilters,
+    games,
+    totalPages,
+    page,
+    isLoading,
+    availableFilters,
     handleSeeMore,
     handleGenreChange,
-    genre: state.genre,
+    genre,
   };
 };
