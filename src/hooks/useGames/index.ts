@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { getGames } from "@/services/games";
 import { GamesState, GamesResponse } from "./types";
 
@@ -11,7 +12,28 @@ const initialState: GamesState = {
   genre: undefined,
 };
 
+const useSearchParamsUpdate = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const updateSearchParams = useCallback((key: string, value: string | null) => {
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (value) {
+        url.searchParams.set(key, value);
+      } else {
+        url.searchParams.delete(key);
+      }
+      router.replace(`${pathname}${url.search}`);
+    }
+  }, [router, pathname]);
+
+  return { updateSearchParams };
+};
+
 export const useGames = (initialGenre?: string) => {
+  const { updateSearchParams } = useSearchParamsUpdate();
+  
   const [state, setState] = useState<GamesState>(() => ({
     ...initialState,
     genre: initialGenre?.toLowerCase(),
@@ -65,13 +87,17 @@ export const useGames = (initialGenre?: string) => {
 
   const handleGenreChange = useCallback(
     (newGenre: string) => {
+      const finalGenre = newGenre === "All" ? "" : newGenre;
+      
       updateState({
-        genre: newGenre === "All" ? "" : newGenre,
+        genre: finalGenre,
         page: 1,
         games: [],
       });
+
+      updateSearchParams("genre", finalGenre ? finalGenre.toLowerCase() : null);
     },
-    [updateState]
+    [updateState, updateSearchParams]
   );
 
   useEffect(() => {

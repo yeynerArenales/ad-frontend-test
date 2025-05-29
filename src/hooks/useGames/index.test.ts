@@ -9,6 +9,34 @@ jest.mock("@/services/games", () => ({
   getGames: jest.fn(),
 }));
 
+const mockReplace = jest.fn();
+
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    replace: mockReplace,
+  }),
+  usePathname: () => "/",
+}));
+
+const originalError = console.error;
+beforeAll(() => {
+  console.error = jest.fn().mockImplementation((...args: Parameters<typeof console.error>) => {
+    const message = args[0];
+    if (
+      typeof message === 'string' && 
+      (message.includes('Warning: An update to TestComponent inside a test was not wrapped in act') ||
+       message.includes('act(...)'))
+    ) {
+      return;
+    }
+    originalError.call(console, ...args);
+  });
+});
+
+afterAll(() => {
+  console.error = originalError;
+});
+
 const mockGamesResponse: GamesResponse = {
   games: mockGames,
   totalPages: 3,
@@ -33,13 +61,18 @@ const mockGamesPageTwoResponse: GamesResponse = {
   currentPage: 2,
 };
 
-const Wrapper = ({ children }: { children: React.ReactNode }) =>
+interface WrapperProps {
+  children: React.ReactNode;
+}
+
+const Wrapper = ({ children }: WrapperProps): React.ReactElement =>
   React.createElement(React.Fragment, null, children);
 
 describe("useGames", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getGames as jest.Mock).mockResolvedValue(mockGamesResponse);
+    mockReplace.mockClear();
   });
 
   describe("Initial state and mounting", () => {
@@ -116,7 +149,7 @@ describe("useGames", () => {
   });
 
   describe("Genre filtering", () => {
-    it("should handle genre change", async () => {
+    it("should handle genre change and update URL", async () => {
       const genreFilterResponse: GamesResponse = {
         games: [mockGames[0]],
         totalPages: 1,
@@ -154,9 +187,10 @@ describe("useGames", () => {
       expect(result.current.games[0].name).toBe("Game 1");
       expect(getGames).toHaveBeenCalledTimes(2);
       expect(getGames).toHaveBeenNthCalledWith(2, 1, "Action");
+      expect(mockReplace).toHaveBeenCalledWith("/?genre=action");
     });
 
-    it("should handle 'All' genre selection", async () => {
+    it("should handle 'All' genre selection and remove URL param", async () => {
       (getGames as jest.Mock)
         .mockResolvedValueOnce(mockGamesResponse)
         .mockResolvedValueOnce(mockGamesResponse);
@@ -183,6 +217,25 @@ describe("useGames", () => {
 
       expect(getGames).toHaveBeenCalledTimes(2);
       expect(getGames).toHaveBeenNthCalledWith(2, 1, "");
+      expect(mockReplace).toHaveBeenCalledWith("/");
+    });
+
+    it("should update URL with lowercase genre", async () => {
+      const { result } = renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      act(() => {
+        result.current.handleGenreChange("ACTION");
+      });
+
+      await waitFor(() => {
+        expect(result.current.genre).toBe("ACTION");
+      });
+
+      expect(mockReplace).toHaveBeenCalledWith("/?genre=action");
     });
   });
 
@@ -211,8 +264,8 @@ describe("useGames", () => {
 
   describe("Loading states", () => {
     it("should manage loading state correctly", async () => {
-      let resolvePromise: (value: any) => void;
-      const gamePromise = new Promise((resolve) => {
+      let resolvePromise: (value: GamesResponse) => void;
+      const gamePromise = new Promise<GamesResponse>((resolve) => {
         resolvePromise = resolve;
       });
 
@@ -229,6 +282,36 @@ describe("useGames", () => {
       });
 
       expect(result.current.games).toEqual(mockGames);
+    });
+  });
+
+  describe("Router functionality", () => {
+    it("should call router.replace when genre changes", async () => {
+      const { result } = renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      act(() => {
+        result.current.handleGenreChange("Action");
+      });
+
+      expect(mockReplace).toHaveBeenCalledWith("/?genre=action");
+    });
+
+    it("should remove genre param when selecting All", async () => {
+      const { result } = renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      act(() => {
+        result.current.handleGenreChange("All");
+      });
+
+      expect(mockReplace).toHaveBeenCalledWith("/");
     });
   });
 });

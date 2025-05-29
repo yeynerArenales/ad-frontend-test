@@ -2,6 +2,7 @@ import React from "react";
 import { renderHook, waitFor } from "@testing-library/react";
 import { getCart, addToCart, removeFromCart } from "@/services/cart";
 import { useCart } from "./index";
+import { Game } from "@/types/game";
 
 jest.mock("@/services/cart", () => ({
   getCart: jest.fn(),
@@ -9,8 +10,12 @@ jest.mock("@/services/cart", () => ({
   removeFromCart: jest.fn(),
 }));
 
-let cartState: any[] = [];
-const Wrapper = ({ children }: { children: React.ReactNode }) =>
+interface WrapperProps {
+  children: React.ReactNode;
+}
+
+let cartState: Game[] = [];
+const Wrapper = ({ children }: WrapperProps): React.ReactElement =>
   React.createElement(React.Fragment, null, children);
 
 describe("useCart", () => {
@@ -20,11 +25,11 @@ describe("useCart", () => {
     (getCart as jest.Mock).mockImplementation(() => {
       return Promise.resolve(cartState);
     });
-    (addToCart as jest.Mock).mockImplementation((game) => {
+    (addToCart as jest.Mock).mockImplementation((game: Game) => {
       cartState = [game];
       return Promise.resolve();
     });
-    (removeFromCart as jest.Mock).mockImplementation((game) => {
+    (removeFromCart as jest.Mock).mockImplementation((game: Game) => {
       cartState = [];
       return Promise.resolve();
     });
