@@ -11,13 +11,23 @@ export const CartItem = ({ game, handleRemove, className }: CartItemProps) => {
         className
       )}
     >
-      <Image
-        className="h-[136px] w-full object-cover md:h-[156px]"
-        src={game.image}
-        alt={game.name}
-        width={256}
-        height={136}
-      />
+      <div className="relative">
+        {game.isNew && (
+          <span
+            className="absolute top-2 left-2 z-10 bg-quaternary text-secondary px-2 py-1 rounded text-base"
+            aria-label="New game"
+          >
+            New
+          </span>
+        )}
+        <Image
+          className="h-[136px] w-full object-cover md:h-[156px]"
+          src={game.image}
+          alt={game.name}
+          width={256}
+          height={136}
+        />
+      </div>
       <IconButton
         icon="/icons/close.svg"
         onClick={() => handleRemove(game)}
