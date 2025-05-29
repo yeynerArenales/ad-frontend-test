@@ -43,10 +43,8 @@ export const useGames = (initialGenre?: string) => {
 
   const { page, genre, games, totalPages, availableFilters, isLoading } = state;
 
-  // Auto scroll when loading finishes
   useEffect(() => {
     if (prevIsLoadingRef.current && !isLoading && page > 1) {
-      // Scroll down half screen height
       const scrollAmount = window.innerHeight / 2;
       window.scrollBy({
         top: scrollAmount,

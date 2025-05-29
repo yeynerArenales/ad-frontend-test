@@ -10,6 +10,17 @@ jest.mock("@/services/games", () => ({
 }));
 
 const mockReplace = jest.fn();
+const mockScrollBy = jest.fn();
+
+Object.defineProperty(window, 'scrollBy', {
+  value: mockScrollBy,
+  writable: true,
+});
+
+Object.defineProperty(window, 'innerHeight', {
+  value: 1000,
+  writable: true,
+});
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -73,6 +84,7 @@ describe("useGames", () => {
     jest.clearAllMocks();
     (getGames as jest.Mock).mockResolvedValue(mockGamesResponse);
     mockReplace.mockClear();
+    mockScrollBy.mockClear();
   });
 
   describe("Initial state and mounting", () => {
@@ -312,6 +324,74 @@ describe("useGames", () => {
       });
 
       expect(mockReplace).toHaveBeenCalledWith("/");
+    });
+  });
+
+  describe("Auto-scroll functionality", () => {
+    it("should NOT scroll on initial load (page 1)", async () => {
+      renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(mockScrollBy).not.toHaveBeenCalled();
+      });
+    });
+
+    it("should scroll when loading more content (page > 1)", async () => {
+      (getGames as jest.Mock)
+        .mockResolvedValueOnce(mockGamesResponse)
+        .mockResolvedValueOnce(mockGamesPageTwoResponse);
+
+      const { result } = renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      mockScrollBy.mockClear();
+
+      act(() => {
+        result.current.handleSeeMore();
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(mockScrollBy).toHaveBeenCalledWith({
+        top: 500,
+        behavior: 'smooth'
+      });
+    });
+
+    it("should NOT scroll when changing genre (resets to page 1)", async () => {
+      const genreFilterResponse: GamesResponse = {
+        games: [mockGames[0]],
+        totalPages: 1,
+        availableFilters: ["Action"],
+        currentPage: 1,
+      };
+
+      (getGames as jest.Mock)
+        .mockResolvedValueOnce(mockGamesResponse)
+        .mockResolvedValueOnce(genreFilterResponse);
+
+      const { result } = renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      mockScrollBy.mockClear();
+
+      act(() => {
+        result.current.handleGenreChange("Action");
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(mockScrollBy).not.toHaveBeenCalled();
     });
   });
 });

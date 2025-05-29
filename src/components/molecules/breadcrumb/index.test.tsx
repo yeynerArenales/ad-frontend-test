@@ -42,7 +42,7 @@ describe('Breadcrumb', () => {
     const navigation = screen.getByRole('navigation');
     const link = screen.getByRole('link');
     
-    expect(navigation).toHaveClass('py-4 px-4 md:px-20');
+    expect(navigation).toHaveClass('py-4 px-4 lg:px-20');
     expect(link).toHaveClass('flex items-center gap-2 text-base text-medium text-secondary hover:text-tertiary');
   });
 }); 
