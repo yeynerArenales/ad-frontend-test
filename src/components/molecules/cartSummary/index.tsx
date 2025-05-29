@@ -17,7 +17,9 @@ export const CartSummary = ({ products }: { products: Game[] }) => {
       <ul className="flex flex-col gap-4 mt-12 mb-8">
         {products.map((product) => (
           <li className="flex justify-between items-center" key={product.id}>
-            <p className="text-lg text-secondary w-[80%]">{product.name}</p>
+            <p className="text-lg text-secondary w-[70%] sm:w-[80%]">
+              {product.name}
+            </p>
             <p className="text-lg text-secondary">$ {product.price}</p>
           </li>
         ))}
