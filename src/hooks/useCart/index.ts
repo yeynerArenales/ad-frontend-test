@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { Game } from "@/types/game";
-import { getCart, addToCart, removeFromCart } from "@/services/cart";
+import { getCart, addToCart, removeFromCart, clearCart as clearCartService } from "@/services/cart";
 import { CartState, CartAction } from "./types";
 
 export const useCart = () => {
@@ -111,6 +111,18 @@ export const useCart = () => {
     [products, isProcessing, fetchCart, updateState]
   );
 
+  const clearCart = useCallback(async () => {
+    updateState({ loading: true });
+    try {
+      await clearCartService();
+      updateState({ products: [] });
+    } catch (error) {
+      throw error;
+    } finally {
+      updateState({ loading: false });
+    }
+  }, [updateState]);
+
   useEffect(() => {
     if (!isProcessing && actionQueue.length > 0) {
       processNextAction();
@@ -127,5 +139,6 @@ export const useCart = () => {
     loadingIds,
     waitingIds,
     handleCartAction,
+    clearCart,
   };
 };

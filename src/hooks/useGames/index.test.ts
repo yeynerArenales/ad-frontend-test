@@ -9,6 +9,45 @@ jest.mock("@/services/games", () => ({
   getGames: jest.fn(),
 }));
 
+const mockReplace = jest.fn();
+const mockScrollBy = jest.fn();
+
+Object.defineProperty(window, 'scrollBy', {
+  value: mockScrollBy,
+  writable: true,
+});
+
+Object.defineProperty(window, 'innerHeight', {
+  value: 1000,
+  writable: true,
+});
+
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    replace: mockReplace,
+  }),
+  usePathname: () => "/",
+}));
+
+const originalError = console.error;
+beforeAll(() => {
+  console.error = jest.fn().mockImplementation((...args: Parameters<typeof console.error>) => {
+    const message = args[0];
+    if (
+      typeof message === 'string' && 
+      (message.includes('Warning: An update to TestComponent inside a test was not wrapped in act') ||
+       message.includes('act(...)'))
+    ) {
+      return;
+    }
+    originalError.call(console, ...args);
+  });
+});
+
+afterAll(() => {
+  console.error = originalError;
+});
+
 const mockGamesResponse: GamesResponse = {
   games: mockGames,
   totalPages: 3,
@@ -33,13 +72,19 @@ const mockGamesPageTwoResponse: GamesResponse = {
   currentPage: 2,
 };
 
-const Wrapper = ({ children }: { children: React.ReactNode }) =>
+interface WrapperProps {
+  children: React.ReactNode;
+}
+
+const Wrapper = ({ children }: WrapperProps): React.ReactElement =>
   React.createElement(React.Fragment, null, children);
 
 describe("useGames", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getGames as jest.Mock).mockResolvedValue(mockGamesResponse);
+    mockReplace.mockClear();
+    mockScrollBy.mockClear();
   });
 
   describe("Initial state and mounting", () => {
@@ -116,7 +161,7 @@ describe("useGames", () => {
   });
 
   describe("Genre filtering", () => {
-    it("should handle genre change", async () => {
+    it("should handle genre change and update URL", async () => {
       const genreFilterResponse: GamesResponse = {
         games: [mockGames[0]],
         totalPages: 1,
@@ -154,9 +199,10 @@ describe("useGames", () => {
       expect(result.current.games[0].name).toBe("Game 1");
       expect(getGames).toHaveBeenCalledTimes(2);
       expect(getGames).toHaveBeenNthCalledWith(2, 1, "Action");
+      expect(mockReplace).toHaveBeenCalledWith("/?genre=action");
     });
 
-    it("should handle 'All' genre selection", async () => {
+    it("should handle 'All' genre selection and remove URL param", async () => {
       (getGames as jest.Mock)
         .mockResolvedValueOnce(mockGamesResponse)
         .mockResolvedValueOnce(mockGamesResponse);
@@ -183,6 +229,25 @@ describe("useGames", () => {
 
       expect(getGames).toHaveBeenCalledTimes(2);
       expect(getGames).toHaveBeenNthCalledWith(2, 1, "");
+      expect(mockReplace).toHaveBeenCalledWith("/");
+    });
+
+    it("should update URL with lowercase genre", async () => {
+      const { result } = renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      act(() => {
+        result.current.handleGenreChange("ACTION");
+      });
+
+      await waitFor(() => {
+        expect(result.current.genre).toBe("ACTION");
+      });
+
+      expect(mockReplace).toHaveBeenCalledWith("/?genre=action");
     });
   });
 
@@ -211,8 +276,8 @@ describe("useGames", () => {
 
   describe("Loading states", () => {
     it("should manage loading state correctly", async () => {
-      let resolvePromise: (value: any) => void;
-      const gamePromise = new Promise((resolve) => {
+      let resolvePromise: (value: GamesResponse) => void;
+      const gamePromise = new Promise<GamesResponse>((resolve) => {
         resolvePromise = resolve;
       });
 
@@ -229,6 +294,104 @@ describe("useGames", () => {
       });
 
       expect(result.current.games).toEqual(mockGames);
+    });
+  });
+
+  describe("Router functionality", () => {
+    it("should call router.replace when genre changes", async () => {
+      const { result } = renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      act(() => {
+        result.current.handleGenreChange("Action");
+      });
+
+      expect(mockReplace).toHaveBeenCalledWith("/?genre=action");
+    });
+
+    it("should remove genre param when selecting All", async () => {
+      const { result } = renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      act(() => {
+        result.current.handleGenreChange("All");
+      });
+
+      expect(mockReplace).toHaveBeenCalledWith("/");
+    });
+  });
+
+  describe("Auto-scroll functionality", () => {
+    it("should NOT scroll on initial load (page 1)", async () => {
+      renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(mockScrollBy).not.toHaveBeenCalled();
+      });
+    });
+
+    it("should scroll when loading more content (page > 1)", async () => {
+      (getGames as jest.Mock)
+        .mockResolvedValueOnce(mockGamesResponse)
+        .mockResolvedValueOnce(mockGamesPageTwoResponse);
+
+      const { result } = renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      mockScrollBy.mockClear();
+
+      act(() => {
+        result.current.handleSeeMore();
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(mockScrollBy).toHaveBeenCalledWith({
+        top: 500,
+        behavior: 'smooth'
+      });
+    });
+
+    it("should NOT scroll when changing genre (resets to page 1)", async () => {
+      const genreFilterResponse: GamesResponse = {
+        games: [mockGames[0]],
+        totalPages: 1,
+        availableFilters: ["Action"],
+        currentPage: 1,
+      };
+
+      (getGames as jest.Mock)
+        .mockResolvedValueOnce(mockGamesResponse)
+        .mockResolvedValueOnce(genreFilterResponse);
+
+      const { result } = renderHook(() => useGames(), { wrapper: Wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      mockScrollBy.mockClear();
+
+      act(() => {
+        result.current.handleGenreChange("Action");
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(mockScrollBy).not.toHaveBeenCalled();
     });
   });
 });

@@ -12,7 +12,7 @@ export const Breadcrumb = () => {
 
   return (
     <div
-      className="py-4 px-4 md:px-20"
+      className="py-4 px-4 lg:px-20"
       role="navigation"
       aria-label="Back to catalog"
     >

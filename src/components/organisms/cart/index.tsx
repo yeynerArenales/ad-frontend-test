@@ -12,7 +12,7 @@ import { Game, ToastState } from "@/types";
 
 export const Cart = () => {
   const router = useRouter();
-  const { products, loading, handleCartAction } = useCart();
+  const { products, loading, handleCartAction, clearCart } = useCart();
   const [toast, setToast] = useState<ToastState>({
     show: false,
     message: "",
@@ -28,6 +28,26 @@ export const Cart = () => {
     } catch (error) {
       console.error("Error removing item from cart:", error);
       setToast({ show: true, message: "An error occurred. Please try again." });
+    }
+  };
+
+  const handleCheckout = async () => {
+    try {
+      await clearCart();
+      setToast({
+        show: true,
+        message: "Thank you for your purchase! Redirecting to catalog...",
+      });
+      
+      setTimeout(() => {
+        router.push("/");
+      }, 3000);
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      setToast({ 
+        show: true, 
+        message: "An error occurred during checkout. Please try again." 
+      });
     }
   };
 
@@ -59,7 +79,7 @@ export const Cart = () => {
           <Button
             variant="secondary"
             className="mt-8"
-            onClick={() => router.push("/")}
+            onClick={handleCheckout}
             disabled={products.length === 0}
           >
             Checkout

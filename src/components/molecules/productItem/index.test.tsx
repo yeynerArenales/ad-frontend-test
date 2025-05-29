@@ -97,7 +97,6 @@ describe('ProductItem', () => {
       'rounded-lg',
       'h-[430px]',
       'w-full',
-      'md:w-[380px]',
       'p-4',
       'flex',
       'flex-col'

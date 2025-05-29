@@ -13,7 +13,7 @@ describe('Header', () => {
     expect(nav).toHaveClass(
       'bg-surface',
       'px-4',
-      'md:px-20',
+      'lg:px-20',
       'py-2.5',
       'flex',
       'items-center',

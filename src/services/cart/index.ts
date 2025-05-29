@@ -23,3 +23,11 @@ export const removeFromCart = async (game: Game) => {
   });
   return res.json();
 };
+
+export const clearCart = async () => {
+  const res = await fetch(`${API_CONFIG.baseURL}/cart/clear`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+  return res.json();
+};
