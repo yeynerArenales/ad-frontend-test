@@ -16,7 +16,7 @@ export const ProductItem = ({
   isLoading,
 }: ProductItemProps) => {
   return (
-    <article className="border-[0.5px] border-tertiary rounded-lg h-[430px] w-full p-4 flex flex-col lg:w-[380px]">
+    <article className="border-[0.5px] border-tertiary rounded-lg h-[430px] w-full p-4 flex flex-col xl:w-[380px]">
       <div className="relative flex-grow">
         {game.isNew && (
           <span
