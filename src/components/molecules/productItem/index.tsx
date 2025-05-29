@@ -1,13 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/components/molecules/button";
-import { Game } from "@/types/game";
-
-export interface ProductItemProps {
-  game: Game;
-  handleOnClick: () => void;
-  isInCart: boolean;
-  isLoading: boolean;
-}
+import { ProductItemProps } from "./types";
 
 export const ProductItem = ({
   game,
