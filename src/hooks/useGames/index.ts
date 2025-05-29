@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { getGames } from "@/services/games";
 import { GamesState, GamesResponse } from "./types";
@@ -39,7 +39,22 @@ export const useGames = (initialGenre?: string) => {
     genre: initialGenre?.toLowerCase(),
   }));
 
+  const prevIsLoadingRef = useRef<boolean>(false);
+
   const { page, genre, games, totalPages, availableFilters, isLoading } = state;
+
+  // Auto scroll when loading finishes
+  useEffect(() => {
+    if (prevIsLoadingRef.current && !isLoading && page > 1) {
+      // Scroll down half screen height
+      const scrollAmount = window.innerHeight / 2;
+      window.scrollBy({
+        top: scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+    prevIsLoadingRef.current = isLoading;
+  }, [isLoading, page]);
 
   const updateState = useCallback(
     (

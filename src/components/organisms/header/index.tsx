@@ -4,7 +4,7 @@ import Image from "next/image";
 export const Header = () => {
   return (
     <header>
-      <nav className="bg-surface px-4 md:px-20 py-2.5 flex items-center justify-between">
+      <nav className="bg-surface px-4 lg:px-20 py-2.5 flex items-center justify-between">
         <Link href="/" className="font-bold text-xxl text-text-gray">
           GamerShop
         </Link>
